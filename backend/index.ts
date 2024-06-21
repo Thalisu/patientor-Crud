@@ -6,6 +6,6 @@ app.get("/api/ping", (_req, res) => {
   res.send("pong");
 });
 
-app.listen(config.PORT, () => {
-  logger.info(`Server running on port http://localhost:${config.PORT}`);
+app.listen(config.PORT || 3005, () => {
+  logger.info(`Server running on port http://localhost:${config.PORT || 3005}`);
 });
