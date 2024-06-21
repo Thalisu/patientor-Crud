@@ -1,14 +1,14 @@
 import data from "../../data/patients";
 import { Router } from "express";
-import { Gender, Patient } from "../types";
+import { Gender, Patient as PatientType } from "../types";
 import logger from "../utils/logger";
-import addPatient from "../patientService";
-import toNewPatientEntry from "../utils";
+import Patient from "../models/patient";
+import { isPatient } from "../utils/typeguards";
 
 const patientsRouter = Router();
 
 patientsRouter.get("/", (_req, res) => {
-  const patients = data.map((d): Patient => {
+  const patients = data.map((d): PatientType => {
     return {
       id: d.id,
       name: d.name,
@@ -30,11 +30,22 @@ patientsRouter.get("/:id", (req, res) => {
   res.json(patient);
 });
 
-patientsRouter.post("/", (req, res) => {
-  const newPatient = toNewPatientEntry(req.body);
-  addPatient(newPatient);
-  logger.info(`post patient`);
-  res.json(newPatient);
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+patientsRouter.post("/", async (req, res) => {
+  let newPatient;
+  try {
+    newPatient = isPatient(req.body);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send(error).end();
+  }
+  try {
+    const patient = new Patient(newPatient);
+    const response = await patient.save();
+    res.status(201).json(response).end();
+  } catch (error) {
+    res.status(502).send(error).end();
+  }
 });
 
 export default patientsRouter;
