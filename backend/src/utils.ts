@@ -1,5 +1,5 @@
 import { NewPatient, Gender } from "./types";
-import { error } from "./utils/logger";
+import logger from "./utils/logger";
 
 export const isString = (text: unknown): text is string => {
   return typeof text === "string" || text instanceof String;
@@ -13,7 +13,7 @@ export const isOptionalString = (text: unknown): text is string | undefined => {
 
 export const parseString = (text: unknown): string => {
   if (!text || !isString(text)) {
-    error(`Incorrect or missing text: ${text}`);
+    logger.error(`Incorrect or missing text: ${text}`);
     throw new Error(`Incorrect or missing text: ${text}`);
   }
   return text;
@@ -21,7 +21,7 @@ export const parseString = (text: unknown): string => {
 
 export const parseOptionalString = (text: unknown): string | undefined => {
   if (!isOptionalString(text)) {
-    error(`Incorrect or missing text: ${text}`);
+    logger.error(`Incorrect or missing text: ${text}`);
     throw new Error(`Incorrect or missing text: ${text}`);
   }
   return text;
@@ -35,7 +35,7 @@ export const isGender = (gender: string): gender is Gender => {
 
 export const parseGender = (gender: unknown): Gender => {
   if (!gender || !isString(gender) || !isGender(gender)) {
-    error(`Incorrect or missing gender: ${gender}`);
+    logger.error(`Incorrect or missing gender: ${gender}`);
     throw new Error(`Incorrect or missing gender: ${gender}`);
   }
   return gender;

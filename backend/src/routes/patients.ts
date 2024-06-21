@@ -1,7 +1,7 @@
 import data from "../../data/patients";
 import { Router } from "express";
 import { Gender, Patient } from "../types";
-import { info } from "../utils/logger";
+import logger from "../utils/logger";
 import addPatient from "../patientService";
 import toNewPatientEntry from "../utils";
 
@@ -18,7 +18,7 @@ patientsRouter.get("/", (_req, res) => {
     };
   });
 
-  info(`get patients`);
+  logger.info(`get patients`);
   res.json(patients);
 });
 
@@ -26,14 +26,14 @@ patientsRouter.get("/:id", (req, res) => {
   const id = req.params.id;
   const patient = data.find((x) => x.id === id);
 
-  info(`get patient of id: ${id}`);
+  logger.info(`get patient of id: ${id}`);
   res.json(patient);
 });
 
 patientsRouter.post("/", (req, res) => {
   const newPatient = toNewPatientEntry(req.body);
   addPatient(newPatient);
-  info(`post patient`);
+  logger.info(`post patient`);
   res.json(newPatient);
 });
 

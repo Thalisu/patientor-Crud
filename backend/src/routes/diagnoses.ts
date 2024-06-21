@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { info } from "../utils/logger";
+import logger from "../utils/logger";
 import data from "../../data/diagnoses";
 import { Diagnosis } from "../types";
 
@@ -14,7 +14,7 @@ diagnosesRouter.get("/", (_req, res) => {
     };
   });
 
-  info("get diagnoses");
+  logger.info("get diagnoses");
   res.json(diagnoses);
 });
 
@@ -22,7 +22,7 @@ diagnosesRouter.get("/:code", (req, res) => {
   const code = req.params.code;
   const diagnoseName = data.find((x) => x.code === code);
 
-  info("get diagnoses");
+  logger.info("get diagnoses");
   res.json(diagnoseName?.name);
 });
 
