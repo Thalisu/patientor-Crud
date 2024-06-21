@@ -1,13 +1,5 @@
 import mongoose from "mongoose";
-
-const baseEntry = {
-  id: String,
-  description: String,
-  date: String,
-  specialist: String,
-  type: String,
-  diagnosisCodes: [String],
-};
+import entrySchema from "./entry";
 
 const patientSchema = new mongoose.Schema({
   name: {
@@ -28,32 +20,7 @@ const patientSchema = new mongoose.Schema({
   ssn: {
     type: String,
   },
-  entries: {
-    type: [
-      {
-        baseEntry,
-        hospitalEntry: {
-          type: {
-            date: String,
-            criteria: String,
-          },
-        },
-        occupationalHealthcareEntry: {
-          type: {
-            employerName: String,
-            sickLeave: {
-              type: {
-                startDate: String,
-                endDate: String,
-              },
-            },
-          },
-        },
-        HealthCheckRating: Number,
-      },
-    ],
-    required: true,
-  },
+  entries: [entrySchema],
 });
 
 patientSchema.set("toJSON", {
