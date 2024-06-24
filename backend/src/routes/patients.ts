@@ -39,4 +39,24 @@ patientsRouter.post("/", async (req, res) => {
   }
 });
 
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+patientsRouter.put("/:id", async (req, res) => {
+  let newPatient;
+  const id = req.params.id;
+  try {
+    newPatient = isPatient(req.body);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send(error).end();
+  }
+  try {
+    const updatedPatient = await Patient.findByIdAndUpdate(id, newPatient, {
+      new: true,
+    });
+    res.json(updatedPatient).end();
+  } catch (error) {
+    res.status(502).send(error).end();
+  }
+});
+
 export default patientsRouter;
