@@ -1,4 +1,2 @@
-const Hospital = () => {
-
-}
-export const Hospital
+const Hospital = () => {};
+export default Hospital;
