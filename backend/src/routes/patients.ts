@@ -1,33 +1,24 @@
-import data from "../../data/patients";
 import { Router } from "express";
-import { Gender, Patient as PatientType } from "../types";
 import logger from "../utils/logger";
 import Patient from "../models/patient";
 import { isPatient } from "../utils/typeguards";
 
 const patientsRouter = Router();
 
-patientsRouter.get("/", (_req, res) => {
-  const patients = data.map((d): PatientType => {
-    return {
-      id: d.id,
-      name: d.name,
-      occupation: d.occupation,
-      gender: d.gender as Gender,
-      dateOfBirth: d?.dateOfBirth,
-    };
-  });
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+patientsRouter.get("/", async (_req, res) => {
+  const patients = await Patient.find({});
 
   logger.info(`get patients`);
   res.json(patients);
 });
 
-patientsRouter.get("/:id", (req, res) => {
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+patientsRouter.get("/:id", async (req, res) => {
+  //.populate("user", { username: 1, name: 1 })
   const id = req.params.id;
-  const patient = data.find((x) => x.id === id);
-
-  logger.info(`get patient of id: ${id}`);
-  res.json(patient);
+  const patient = await Patient.findById(id);
+  res.json(patient).end();
 });
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
