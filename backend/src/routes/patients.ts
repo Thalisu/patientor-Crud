@@ -59,4 +59,11 @@ patientsRouter.put("/:id", async (req, res) => {
   }
 });
 
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+patientsRouter.delete("/:id", async (req, res) => {
+  const id = req.params.id;
+  await Patient.findByIdAndDelete(id);
+  res.status(204).end();
+});
+
 export default patientsRouter;
