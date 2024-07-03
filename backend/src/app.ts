@@ -1,6 +1,5 @@
 import express from "express";
 import helmet from "helmet";
-import cors from "cors";
 import { diagnosesRouter, patientsRouter } from "./routes";
 
 import mongoose from "mongoose";
