@@ -1,4 +1,5 @@
 import express from "express";
+import helmet from "helmet";
 import cors from "cors";
 import { diagnosesRouter, patientsRouter } from "./routes";
 
@@ -21,9 +22,12 @@ mongoose
 
 const app = express();
 
+app.use(helmet());
+
 app.use(express.json());
-app.use(cors());
+
 app.use(express.static("dist"));
+
 app.use("/api/patients", patientsRouter);
 app.use("/api/diagnoses", diagnosesRouter);
 
