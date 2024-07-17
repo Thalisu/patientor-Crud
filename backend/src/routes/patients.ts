@@ -1,7 +1,7 @@
 import { Router } from "express";
 import logger from "../utils/logger";
 import Patient from "../models/patient";
-import { isPatient } from "../utils/typeguards";
+import { isPatient, isValidUpdatePatient } from "../utils/typeguards";
 
 const patientsRouter = Router();
 
@@ -43,8 +43,13 @@ patientsRouter.post("/", async (req, res) => {
 patientsRouter.put("/:id", async (req, res) => {
   let newPatient;
   const id = req.params.id;
+  const oldPatient = await Patient.findById(id);
+  if (!oldPatient) {
+    res.status(404).send("not found");
+    return;
+  }
   try {
-    newPatient = isPatient(req.body);
+    newPatient = isValidUpdatePatient(oldPatient.toObject(), req.body);
   } catch (error) {
     logger.error(error);
     res.status(400).send(error).end();
