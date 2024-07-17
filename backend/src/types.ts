@@ -75,3 +75,10 @@ export interface Patient {
 }
 
 export type NewPatient = Omit<Patient, "id">;
+
+export type UpdatePatient = Partial<Patient>;
+
+export type UpdateObj =
+  | (object & Record<"name", unknown>)
+  | (object & Record<"occupation", unknown>)
+  | (object & Record<"gender", unknown>);
