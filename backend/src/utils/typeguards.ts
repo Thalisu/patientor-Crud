@@ -8,6 +8,9 @@ import {
   OccupationalHealthcareEntry,
   HealthCheckEntry,
   HealthCheckRating,
+  Patient,
+  UpdatePatient,
+  UpdateObj,
 } from "../types";
 import logger from "../utils/logger";
 
@@ -152,6 +155,71 @@ export const isPatient = (object: unknown): NewPatient => {
       };
     }
     return newPatient;
+  }
+  throw new Error("Incorrect data: a field missing");
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const verifyUpdateObject = (obj: UpdateObj): UpdatePatient => {
+  const filteredObj: UpdatePatient = {};
+
+  if ("name" in obj && obj.name !== undefined) {
+    filteredObj.name = parseString(obj.name);
+  }
+  if ("occupation" in obj && obj.occupation !== undefined) {
+    filteredObj.occupation = parseString(obj.occupation);
+  }
+  if ("gender" in obj && obj.gender !== undefined) {
+    filteredObj.gender = parseGender(obj.gender);
+  }
+
+  if (filteredObj.name || filteredObj.occupation || filteredObj.gender)
+    return filteredObj;
+  throw new Error("not a valid update");
+};
+
+export const isValidUpdatePatient = (
+  patient: Patient,
+  newObject: unknown
+): UpdatePatient => {
+  if (!newObject || typeof newObject !== "object") {
+    throw new Error("patient is not an object or is empty");
+  }
+
+  if (
+    "name" in newObject ||
+    "occupation" in newObject ||
+    "gender" in newObject
+  ) {
+    let newPatient = verifyUpdateObject(newObject);
+
+    if ("ssn" in newObject) {
+      newPatient = { ...newPatient, ssn: parseOptionalString(newObject.ssn) };
+    }
+    if ("dateOfBirth" in newObject) {
+      newPatient = {
+        ...newPatient,
+        dateOfBirth: parseOptionalString(newObject.dateOfBirth),
+      };
+    }
+    if ("entries" in newObject) {
+      if (!Array.isArray(newObject.entries)) {
+        throw new Error(`entries is not an array`);
+      }
+      if (
+        !newObject.entries.every((e: Entry) => isEntry(e)) &&
+        newObject.entries.length > 0
+      )
+        throw new Error(`one or more entry is not an valid entry`);
+      newPatient = { ...newPatient, entries: newObject.entries };
+    } else {
+      console.log("a");
+      newPatient = {
+        ...newPatient,
+        entries: [],
+      };
+    }
+    return { ...patient, ...newPatient };
   }
   throw new Error("Incorrect data: a field missing");
 };
