@@ -36,17 +36,17 @@ const entrySchema = new mongoose.Schema({
     },
     _id: false,
   },
-  HealthCheckRating: { type: Number },
+  healthCheckRating: { type: Number },
 });
 
 entrySchema.pre("validate", function (next) {
   if (this.type === "Hospital") {
     this.employerName = undefined;
     this.sickLeave = undefined;
-    this.HealthCheckRating = undefined;
+    this.healthCheckRating = undefined;
   } else if (this.type === "OccupationalHealthcare") {
     this.discharge = undefined;
-    this.HealthCheckRating = undefined;
+    this.healthCheckRating = undefined;
   } else if (this.type === "HealthCheck") {
     this.discharge = undefined;
     this.employerName = undefined;
@@ -55,7 +55,7 @@ entrySchema.pre("validate", function (next) {
     this.discharge = undefined;
     this.employerName = undefined;
     this.sickLeave = undefined;
-    this.HealthCheckRating = undefined;
+    this.healthCheckRating = undefined;
   }
   next();
 });

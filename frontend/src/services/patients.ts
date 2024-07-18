@@ -20,8 +20,22 @@ const create = async (object: PatientFormValues) => {
   return data;
 };
 
+const deleteOne = async (id: string) => {
+  const { data } = await axios.delete(`${apiBaseUrl}/patients/${id}`);
+
+  return data;
+};
+
+const update = async (object: PatientFormValues, id: string) => {
+  const { data } = await axios.put(`${apiBaseUrl}/patients/${id}`, object);
+
+  return data;
+};
+
 export default {
   getAll,
   getOne,
   create,
+  deleteOne,
+  update,
 };
