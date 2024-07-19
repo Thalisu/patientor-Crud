@@ -1,6 +1,10 @@
 import { Router } from "express";
 import Patient from "../models/patient";
-import { PartialPatient, Patient as PatientType } from "../types";
+import {
+  PartialPatient,
+  Patient as PatientType,
+  Entry as EntryType,
+} from "../types";
 
 const patientsRouter = Router();
 
@@ -31,16 +35,30 @@ patientsRouter.post("/", async (req, res) => {
 });
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
+patientsRouter.post("/:id/entries", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const entry = req.body as EntryType;
+    const patient = await Patient.findByIdAndUpdate(
+      id,
+      { $push: { entries: entry } },
+      { new: true, runValidators: true }
+    );
+    res.status(201).json(patient).end();
+  } catch (error) {
+    res.status(502).send(error).end();
+  }
+});
+
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
 patientsRouter.put("/:id", async (req, res) => {
   const id = req.params.id;
-  const patientEntry = req.body as PartialPatient;
-  const oldPatient = await Patient.findById(id);
-  if (!oldPatient) {
-    res.status(404).send("Patient not found");
+  const patient = req.body as PartialPatient;
+  if ("entries" in patient) {
+    delete patient.entries;
   }
-  const newPatient = { ...oldPatient?.toObject(), ...patientEntry };
   try {
-    const updatedPatient = await Patient.findByIdAndUpdate(id, newPatient, {
+    const updatedPatient = await Patient.findByIdAndUpdate(id, patient, {
       new: true,
     });
     res.json(updatedPatient).end();
