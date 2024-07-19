@@ -38,7 +38,6 @@ export enum Type {
 export type DiagnosisCodes = Array<Diagnosis["code"]>;
 
 export interface BaseEntry {
-  id: string;
   description: string;
   date: string;
   specialist: string;
@@ -71,14 +70,11 @@ export interface Patient {
   gender: Gender;
   ssn?: string;
   dateOfBirth?: string;
-  entries?: Entry[];
+  entries?: Omit<Entry, "id">[];
 }
+
+export type PartialPatient = Partial<Patient>;
 
 export type NewPatient = Omit<Patient, "id">;
 
-export type UpdatePatient = Partial<Patient>;
-
-export type UpdateObj =
-  | (object & Record<"name", unknown>)
-  | (object & Record<"occupation", unknown>)
-  | (object & Record<"gender", unknown>);
+export type UpdatePatient = Partial<NewPatient>;
