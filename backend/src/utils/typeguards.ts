@@ -1,5 +1,5 @@
 export const isString = (string: unknown): string is string => {
-  return typeof string === "string" || string instanceof String;
+  return typeof string === "string" && string !== undefined && string !== "";
 };
 
 export const isOptionalString = (text: unknown): text is string | undefined => {
