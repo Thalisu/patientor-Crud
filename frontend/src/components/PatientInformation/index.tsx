@@ -3,6 +3,7 @@ import { Patient } from "../../types";
 import patientService from "../../services/patients";
 import { useEffect, useState } from "react";
 import EntriesDetails from "./Entries";
+import NewEntryForm from "./NewEntryForm";
 const styleSsh = {
   margin: "16px 0 0",
 };
@@ -17,12 +18,12 @@ const PatientInformation = (): JSX.Element => {
   useEffect(() => {
     patientService.getOne(id as string).then((data) => setPatient(data));
   }, [id]);
-  console.log(patient);
   return (
     <>
       <h2>{patient?.name}</h2>
       <p style={styleSsh}>ssn: {patient?.ssn}</p>
       <p style={styleOcc}>occupation: {patient?.occupation}</p>
+      <NewEntryForm setPatient={setPatient} />
       <h3>entries</h3>
       <ol>
         {patient?.entries?.length !== 0 ? (
