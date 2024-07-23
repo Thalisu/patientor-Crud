@@ -1,22 +1,10 @@
 import { HealthCheckEntry } from "../../../types";
+import { getHealth } from "../../../utils";
 
 const HealthCheck = ({ entry }: { entry: HealthCheckEntry }): JSX.Element => {
-  const getHealth = () => {
-    switch (entry.healthCheckRating) {
-      case 0:
-        return "💚";
-      case 1:
-        return "💛";
-      case 2:
-        return "❤️";
-      default:
-        break;
-    }
-  };
-
   const base = (
     <>
-      {getHealth()}
+      {getHealth(entry.healthCheckRating)}
       <span>Diagnose by {entry.specialist}</span>
     </>
   );

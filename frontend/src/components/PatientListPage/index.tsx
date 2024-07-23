@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Table,
@@ -60,6 +60,29 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
     }
   };
 
+  const handlePatientDeletion = async (id: string) => {
+    try {
+      await patientService.deleteOne(id);
+      setPatients(patients.filter((p) => p.id !== id));
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        if (e?.response?.data && typeof e?.response?.data === "string") {
+          const message = e.response.data.replace(
+            "Something went wrong. Error: ",
+            ""
+          );
+          console.error(message);
+          setError(message);
+        } else {
+          setError("Unrecognized axios error");
+        }
+      } else {
+        console.error("Unknown error", e);
+        setError("Unknown error");
+      }
+    }
+  };
+
   return (
     <div className="App">
       <Box>
@@ -74,6 +97,7 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
             <TableCell>Gender</TableCell>
             <TableCell>Occupation</TableCell>
             <TableCell>Health Rating</TableCell>
+            <TableCell>Remove</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -85,7 +109,15 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
               <TableCell>{patient.gender}</TableCell>
               <TableCell>{patient.occupation}</TableCell>
               <TableCell>
-                <HealthRatingBar showText={false} rating={1} />
+                <HealthRatingBar entries={patient.entries} />
+              </TableCell>
+              <TableCell>
+                <button
+                  type="button"
+                  onClick={() => handlePatientDeletion(patient.id)}
+                >
+                  🗑️
+                </button>
               </TableCell>
             </TableRow>
           ))}
